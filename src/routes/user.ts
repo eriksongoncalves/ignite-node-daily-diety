@@ -5,6 +5,7 @@ import { hash } from 'bcryptjs'
 
 import { knex } from '../database'
 import { env } from '../env'
+import { checkSessionIdExists } from '../middlewares/checkSessionIdExists'
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/', async (req, reply) => {
@@ -43,4 +44,41 @@ export async function userRoutes(app: FastifyInstance) {
 
     reply.status(201).send()
   })
+
+  app.get(
+    '/summary',
+    { preHandler: [checkSessionIdExists] },
+    async (req, reply) => {
+      const userSessionId = req.cookies.sessionId
+
+      const countMeals = await knex('meals')
+        .count('id', { as: 'countMeals' })
+        .where({
+          session_id: userSessionId
+        })
+        .first()
+
+      const countMealsInDiet = await knex('meals')
+        .count('id', { as: 'countMealsInDiet' })
+        .where({
+          session_id: userSessionId,
+          is_it_in_diet: true
+        })
+        .first()
+
+      const countMealsOutDiet = await knex('meals')
+        .count('id', { as: 'countMealsOutDiet' })
+        .where({
+          session_id: userSessionId,
+          is_it_in_diet: false
+        })
+        .first()
+
+      return reply.status(200).send({
+        ...countMeals,
+        ...countMealsInDiet,
+        ...countMealsOutDiet
+      })
+    }
+  )
 }
