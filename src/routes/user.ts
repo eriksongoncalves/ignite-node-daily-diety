@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { hash } from 'bcryptjs'
 
 import { knex } from '../database'
+import { env } from '../env'
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/', async (req, reply) => {
@@ -21,7 +22,7 @@ export async function userRoutes(app: FastifyInstance) {
       return reply.status(400).send('E-mail already exists')
     }
 
-    const passwordHash = await hash(user.password, 6)
+    const passwordHash = await hash(user.password, env.PASSWORD_SALT)
 
     let { userId } = req.cookies
 

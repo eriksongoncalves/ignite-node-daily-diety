@@ -10,7 +10,8 @@ if (process.env.NODE_ENV === 'test') {
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),
   DATABASE_URL: z.string(),
-  PORT: z.string().default('3333')
+  PORT: z.string().default('3333'),
+  PASSWORD_SALT: z.number().default(6)
 })
 
 // eslint-disable-next-line no-underscore-dangle
