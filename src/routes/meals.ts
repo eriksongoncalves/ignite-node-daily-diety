@@ -82,4 +82,14 @@ export async function mealRoutes(app: FastifyInstance) {
 
     return reply.status(400).send('Meal not found')
   })
+
+  app.get('/', mealRoutesMiddlewares, async (req, reply) => {
+    const userSessionId = req.cookies.sessionId
+
+    const meals = await knex('meals').select().where({
+      session_id: userSessionId
+    })
+
+    return reply.status(200).send(meals)
+  })
 }
