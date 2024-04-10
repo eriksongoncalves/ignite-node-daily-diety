@@ -29,4 +29,37 @@ export async function mealRoutes(app: FastifyInstance) {
 
     reply.status(201).send()
   })
+
+  app.put('/:mealId', mealRoutesMiddlewares, async (req, reply) => {
+    const paramsSchema = z.object({
+      mealId: z.string().uuid()
+    })
+
+    const mealSchema = z.object({
+      name: z.string(),
+      description: z.string(),
+      date: z.coerce.date(),
+      time: z.string().min(5).max(5),
+      is_it_in_diet: z.boolean()
+    })
+
+    const bodyData = mealSchema.parse(req.body)
+    const { mealId } = paramsSchema.parse(req.params)
+    const userSessionId = req.cookies.sessionId
+
+    const rows = await knex('meals')
+      .update({
+        ...bodyData
+      })
+      .where({
+        id: mealId,
+        session_id: userSessionId
+      })
+
+    if (rows >= 1) {
+      return reply.status(204).send()
+    }
+
+    return reply.status(400).send('Meal not found')
+  })
 }
