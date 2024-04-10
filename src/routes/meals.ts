@@ -62,4 +62,24 @@ export async function mealRoutes(app: FastifyInstance) {
 
     return reply.status(400).send('Meal not found')
   })
+
+  app.delete('/:mealId', mealRoutesMiddlewares, async (req, reply) => {
+    const paramsSchema = z.object({
+      mealId: z.string().uuid()
+    })
+
+    const { mealId } = paramsSchema.parse(req.params)
+    const userSessionId = req.cookies.sessionId
+
+    const rows = await knex('meals').delete().where({
+      id: mealId,
+      session_id: userSessionId
+    })
+
+    if (rows >= 1) {
+      return reply.status(204).send()
+    }
+
+    return reply.status(400).send('Meal not found')
+  })
 }

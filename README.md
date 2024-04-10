@@ -18,8 +18,8 @@ Nesse desafio desenvolveremos uma API para controle de dieta diária, a Daily Di
 - Está dentro ou não da dieta
 
 <br >
-- [ ] - Deve ser possível editar uma refeição, podendo alterar todos os dados acima<br >
-- [ ] - Deve ser possível apagar uma refeição<br >
+- [x] - Deve ser possível editar uma refeição, podendo alterar todos os dados acima<br >
+- [x] - Deve ser possível apagar uma refeição<br >
 - [ ] - Deve ser possível listar todas as refeições de um usuário<br >
 - [ ] - Deve ser possível visualizar uma única refeição<br >
 - [ ] - Deve ser possível recuperar as métricas de um usuário<br >
